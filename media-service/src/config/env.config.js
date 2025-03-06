@@ -1,0 +1,16 @@
+export const PORT = process.env.PORT;
+export const REDIS_PORT = process.env.REDIS_PORT;
+export const REDIS_HOST = process.env.REDIS_HOST;
+export const REDIS_USERNAME = process.env.REDIS_USERNAME;
+export const REDIS_PASSWORD = process.env.REDIS_PASSWORD;
+export const MONGODB_URI = process.env.MONGODB_URI;
+export const NODE_ENV = process.env.NODE_ENV
+export const CLOUDINARY_API_KEY = process.env.CLOUDINARY_API_KEY
+export const CLOUDINARY_API_SECRET = process.env.CLOUDINARY_API_SECRET
+export const CLOUDINARY_CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME
+export const RABBITMQ_HOST = process.env.RABBITMQ_HOST
+export const RABBITMQ_PORT = process.env.RABBITMQ_PORT
+export const RABBITMQ_MPORT = process.env.RABBITMQ_MPORT
+export const RABBITMQ_USER = process.env.RABBITMQ_USER
+export const RABBITMQ_PASS = process.env.RABBITMQ_PASS
+export const RABBITMQ_VHOST = process.env.RABBITMQ_VHOST
