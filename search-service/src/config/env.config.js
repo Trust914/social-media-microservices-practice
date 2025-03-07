@@ -8,6 +8,12 @@ export const NODE_ENV = process.env.NODE_ENV
 export const RABBITMQ_HOST = process.env.RABBITMQ_HOST
 export const RABBITMQ_PORT = process.env.RABBITMQ_PORT
 export const RABBITMQ_MPORT = process.env.RABBITMQ_MPORT
-export const RABBITMQ_USER = process.env.RABBITMQ_USER
-export const RABBITMQ_PASS = process.env.RABBITMQ_PASS
+export const RABBITMQ_DEFAULT_USER = process.env.RABBITMQ_DEFAULT_USER
+export const RABBITMQ_DEFAULT_PASS = process.env.RABBITMQ_DEFAULT_PASS
 export const RABBITMQ_VHOST = process.env.RABBITMQ_VHOST
+export const MONGO_INITDB_HOST = process.env.MONGO_INITDB_HOST
+export const MONGO_INITDB_PORT = process.env.MONGO_INITDB_PORT
+export const MONGO_INITDB_ROOT_USERNAME = process.env.MONGO_INITDB_ROOT_USERNAME
+export const MONGO_INITDB_ROOT_PASSWORD = process.env.MONGO_INITDB_ROOT_PASSWORD
+export const MONGO_INITDB_DATABASE = process.env.MONGO_INITDB_DATABASE
+export const MONGO_INITDB_URI = `mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@${MONGO_INITDB_HOST}:${MONGO_INITDB_PORT}/${MONGO_INITDB_DATABASE}?authSource=admin`;

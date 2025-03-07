@@ -1,11 +1,11 @@
 import express from "express";
-import { corsConfig } from "../../identity-service/src/configs/cors.config.js";
+import { corsConfig } from "./configs/cors.config.js";
 import { Redis } from "ioredis";
 import { RateLimiterRedis } from "rate-limiter-flexible";
 import {
   redisConnConfig,
   redisRateLimiterOptions,
-} from "../../identity-service/src/configs/redis.config.js";
+} from "./configs/redis.config.js";
 import { endpointRateLimiter } from "./configs/endpointsRateLimiter.config.js";
 import { redisRateLimiterMiddleware } from "./middlewares/redisRateLimiter.middleware.js";
 import helmet from "helmet";

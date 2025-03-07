@@ -7,55 +7,71 @@ let connection, channel;
 
 export const connectToRabbitMQ = async () => {
   try {
+    logger.debug(`Attempting to connect to RabbitMQ with config:`, rabbitMQConfig);
+    
+    
     connection = await amqp.connect(rabbitMQConfig);
     channel = await connection.createChannel();
 
     await channel.assertExchange(EXCHANGE_NAME, "topic", { durable: false });
     logger.info(`Successfully connected to RabbitMQ`);
+    
+    connection.on('error', (err) => {
+      logger.error(`RabbitMQ connection error: ${err.message}`);
+    });
+    
     return channel;
   } catch (error) {
-    // throw new PostServiceError(
-    //   `RabbitMQConnError-${error.name}`,
-    //   HTTPCODES.FORBIDDEN,
-    //   `Unable to connect to RabbitMQ, ${error.message}`,
-    //   true,
-    //   { cause: error.cause }
-    // );
     logger.error(`RabbitMQConnError-${error.name}`, {
       info: error.message,
       cause: error.cause,
+      stack: error.stack
     });
+    
+    logger.info('Attempting to reconnect to RabbitMQ in 5 seconds...');
   }
 };
 
 export const publichEvent = async (routingKey, message) => {
-  if (!channel) {
-    await connectToRabbitMQ();
-  }
+  try {
+    if (!channel || !channel.connection) {
+      await connectToRabbitMQ();
+    }
 
-  channel.publish(
-    EXCHANGE_NAME,
-    routingKey,
-    Buffer.from(JSON.stringify(message))
-  );
-  logger.info(`Event published : ${routingKey}`);
+    channel.publish(
+      EXCHANGE_NAME,
+      routingKey,
+      Buffer.from(JSON.stringify(message))
+    );
+    logger.info(`Event published : ${routingKey}`);
+  } catch (error) {
+    logger.error(`Error publishing message: ${error.message}`);
+  }
 };
 
 export const consumeEvent = async (routingKey, callback) => {
-  if (!channel) {
-    await connectToRabbitMQ();
-  }
-
-  const q = await channel.assertQueue("", { exclusive: true });
-  // logger.debug("no channel",q)
-
-  await channel.bindQueue(q.queue, EXCHANGE_NAME, routingKey);
-  channel.consume(q.queue, (msg) => {
-    if (msg !== null) {
-      const content = JSON.parse(msg.content.toString());
-      callback(content);
-      channel.ack(msg);
+  try {
+    if (!channel || !channel.connection) {
+      await connectToRabbitMQ();
     }
-  });
-  logger.info(`Subscribed to event : ${routingKey}`)
+
+    const q = await channel.assertQueue("", { exclusive: true });
+    
+    await channel.bindQueue(q.queue, EXCHANGE_NAME, routingKey);
+    channel.consume(q.queue, (msg) => {
+      if (msg !== null) {
+        try {
+          const content = JSON.parse(msg.content.toString());
+          callback(content);
+          channel.ack(msg);
+        } catch (error) {
+          logger.error(`Error processing message: ${error.message}`);
+          channel.nack(msg, false, false); 
+        }
+      }
+    });
+    logger.info(`Subscribed to event : ${routingKey}`);
+  } catch (error) {
+    logger.error(`Error consuming event: ${error.message}`);
+  }
 };

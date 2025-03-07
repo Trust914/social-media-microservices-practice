@@ -1,4 +1,4 @@
-import { MONGODB_URI } from "../config/service.config.js";
+import { MONGO_INITDB_URI, MONGODB_URI } from "../config/service.config.js";
 import mongoose from "mongoose";
 import { PostServiceError } from "../utils/error.util.js";
 import { HTTPCODES } from "../utils/constants.util.js";
@@ -6,7 +6,8 @@ import { logger } from "../utils/logger.util.js";
 
 export const connectToDB = async () => {
   try {
-    await mongoose.connect(MONGODB_URI);
+    // await mongoose.connect(MONGODB_URI);
+    await mongoose.connect(MONGO_INITDB_URI)
     logger.warn(`Connection to the database has be established`);
   } catch (error) {
     // throw new PostServiceError(
